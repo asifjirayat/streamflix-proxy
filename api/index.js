@@ -110,4 +110,4 @@ app.get("/test-tmdb", async (req, res) => {
   }
 });
 
-export default app;
+module.exports = app;
