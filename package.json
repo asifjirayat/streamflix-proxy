@@ -1,22 +1,25 @@
 {
   "name": "streamflix-proxy",
   "version": "1.0.0",
-  "description": "",
+  "description": "StreamFlix proxy server for TMDB API",
   "license": "ISC",
   "author": "Asif Jirayat",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "api/index.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "build": "echo 'No build step required'"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "helmet": "^8.1.0"
+    "express": "^5.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
