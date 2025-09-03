@@ -88,6 +88,72 @@ app.get("/api/movies/now-playing", async (req, res) => {
   }
 });
 
+// MovieId endpoint
+app.get("/api/movies/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id || isNaN(id)) {
+      return res.status(400).json({
+        error: "Invalid movie ID",
+        message: "Movie ID must be a valid number",
+      });
+    }
+
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}`
+    );
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return res.status(404).json({
+          error: "Movie not found",
+          message: `No movie found with ID: ${id}`,
+        });
+      }
+      throw new Error(`TMDB API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Error fetching movie details:", error);
+    res.status(500).json({
+      error: "Failed to fetch movie details",
+      message: error.message,
+    });
+  }
+});
+
+// Search endpoint
+app.get("/api/movies/search", async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    if (!query) {
+      return res.status(400).json({
+        error: "Search query is required",
+        message: "Please provide a query parameter",
+      });
+    }
+
+    const response = await fetch(
+      `https://api.themoviedb.org/3/search/movie?api_key=${
+        process.env.TMDB_API_KEY
+      }&query=${encodeURIComponent(query)}`
+    );
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Error searching movies:", error);
+    res.status(500).json({
+      error: "Failed to search movies",
+      message: error.message,
+    });
+  }
+});
+
 // Test TMDB
 app.get("/test-tmdb", async (req, res) => {
   try {
