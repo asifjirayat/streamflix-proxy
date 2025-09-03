@@ -7,7 +7,7 @@ const PORT = 3001;
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://streamflix-flax.vercel.app/"],
+    origin: ["http://localhost:5173", "https://streamflix-flax.vercel.app"],
     credentials: true,
   })
 );
@@ -60,7 +60,7 @@ app.get("/api/movies/top-rated", async (req, res) => {
     const response = await fetch(
       `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.TMDB_API_KEY}`
     );
-    const data = response.json();
+    const data = await response.json();
     res.json(data);
   } catch (error) {
     console.error("Error fetching top-rated movies:", error);
@@ -77,7 +77,7 @@ app.get("/api/movies/now-playing", async (req, res) => {
     const response = await fetch(
       `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.TMDB_API_KEY}`
     );
-    const data = response.json();
+    const data = await response.json();
     res.json(data);
   } catch (error) {
     console.error("Error fetching now playing movies:", error);
@@ -88,6 +88,7 @@ app.get("/api/movies/now-playing", async (req, res) => {
   }
 });
 
+// Test TMDB
 app.get("/test-tmdb", async (req, res) => {
   try {
     const response = await fetch(
@@ -109,4 +110,4 @@ app.get("/test-tmdb", async (req, res) => {
   }
 });
 
-module.exports = app;
+export default app;
