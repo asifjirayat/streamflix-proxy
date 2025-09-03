@@ -7,7 +7,8 @@ const PORT = 3001;
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://streamflix-flax.vercel.app/"],
+    credentials: true,
   })
 );
 
@@ -108,6 +109,11 @@ app.get("/test-tmdb", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// For local development
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
