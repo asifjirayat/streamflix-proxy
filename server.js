@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
   });
 });
 
-// Trendind endpoint
+// Trending endpoint
 app.get("/api/movies/trending", async (req, res) => {
   try {
     const response = await fetch(
@@ -31,6 +31,57 @@ app.get("/api/movies/trending", async (req, res) => {
     console.error("Error fetching trending movies:", error);
     res.status(500).json({
       error: "Failed to fetch trending movies",
+      message: error.message,
+    });
+  }
+});
+
+// Popular endpoint
+app.get("/api/movies/popular", async (req, res) => {
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.TMDB_API_KEY}`
+    );
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Error fetching popular movies:", error);
+    res.status(500).json({
+      error: "Failed to fetch popular movies",
+      message: error.message,
+    });
+  }
+});
+
+// Top-rated endpoint
+app.get("/api/movies/top-rated", async (req, res) => {
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.TMDB_API_KEY}`
+    );
+    const data = response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Error fetching top-rated movies:", error);
+    res.status(500).json({
+      error: "Failed to fetch top-rated movies",
+      message: error.message,
+    });
+  }
+});
+
+// Now-playing endpoint
+app.get("/api/movies/now-playing", async (req, res) => {
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.TMDB_API_KEY}`
+    );
+    const data = response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Error fetching now playing movies:", error);
+    res.status(500).json({
+      error: "Failed to fetch now playing movies",
       message: error.message,
     });
   }
