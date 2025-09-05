@@ -3,7 +3,6 @@ const cors = require("cors");
 require("dotenv").config(); // Load environment variables
 
 const app = express();
-const PORT = 3001;
 
 app.use(
   cors({
@@ -23,8 +22,10 @@ app.get("/", (req, res) => {
 // Trending endpoint
 app.get("/api/movies/trending", async (req, res) => {
   try {
+    const { page = 1 } = req.query;
+
     const response = await fetch(
-      `https://api.themoviedb.org/3/trending/movie/week?api_key=${process.env.TMDB_API_KEY}`
+      `https://api.themoviedb.org/3/trending/movie/week?api_key=${process.env.TMDB_API_KEY}&page=${page}`
     );
     const data = await response.json();
     res.json(data);
@@ -40,8 +41,10 @@ app.get("/api/movies/trending", async (req, res) => {
 // Popular endpoint
 app.get("/api/movies/popular", async (req, res) => {
   try {
+    const { page = 1 } = req.query;
+
     const response = await fetch(
-      `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.TMDB_API_KEY}`
+      `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.TMDB_API_KEY}&page=${page}`
     );
     const data = await response.json();
     res.json(data);
@@ -57,8 +60,10 @@ app.get("/api/movies/popular", async (req, res) => {
 // Top-rated endpoint
 app.get("/api/movies/top-rated", async (req, res) => {
   try {
+    const { page = 1 } = req.query;
+
     const response = await fetch(
-      `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.TMDB_API_KEY}`
+      `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.TMDB_API_KEY}&page=${page}`
     );
     const data = await response.json();
     res.json(data);
@@ -74,8 +79,10 @@ app.get("/api/movies/top-rated", async (req, res) => {
 // Now-playing endpoint
 app.get("/api/movies/now-playing", async (req, res) => {
   try {
+    const { page = 1 } = req.query;
+
     const response = await fetch(
-      `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.TMDB_API_KEY}`
+      `https://api.themoviedb.org/3/movie/now_playing?api_key=${process.env.TMDB_API_KEY}&page=${page}`
     );
     const data = await response.json();
     res.json(data);
@@ -83,6 +90,35 @@ app.get("/api/movies/now-playing", async (req, res) => {
     console.error("Error fetching now playing movies:", error);
     res.status(500).json({
       error: "Failed to fetch now playing movies",
+      message: error.message,
+    });
+  }
+});
+
+// Search endpoint
+app.get("/api/movies/search", async (req, res) => {
+  try {
+    const { query, page = 1 } = req.query;
+
+    if (!query) {
+      return res.status(400).json({
+        error: "Search query is required",
+        message: "Please provide a query parameter",
+      });
+    }
+
+    const response = await fetch(
+      `https://api.themoviedb.org/3/search/movie?api_key=${
+        process.env.TMDB_API_KEY
+      }&query=${encodeURIComponent(query)}&page=${page}`
+    );
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Error searching movies:", error);
+    res.status(500).json({
+      error: "Failed to search movies",
       message: error.message,
     });
   }
@@ -120,35 +156,6 @@ app.get("/api/movies/:id", async (req, res) => {
     console.error("Error fetching movie details:", error);
     res.status(500).json({
       error: "Failed to fetch movie details",
-      message: error.message,
-    });
-  }
-});
-
-// Search endpoint
-app.get("/api/movies/search", async (req, res) => {
-  try {
-    const { query } = req.query;
-
-    if (!query) {
-      return res.status(400).json({
-        error: "Search query is required",
-        message: "Please provide a query parameter",
-      });
-    }
-
-    const response = await fetch(
-      `https://api.themoviedb.org/3/search/movie?api_key=${
-        process.env.TMDB_API_KEY
-      }&query=${encodeURIComponent(query)}`
-    );
-
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    console.error("Error searching movies:", error);
-    res.status(500).json({
-      error: "Failed to search movies",
       message: error.message,
     });
   }
